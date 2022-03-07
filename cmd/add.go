@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"io/ioutil"
-	"strings"
 )
 
 // addCmd represents the add command
@@ -20,30 +19,20 @@ var addCmd = &cobra.Command{
 		//GetData(args)
 		//ab := DataStructure{}
 		GetData(args[0])
+		//fmt.Println(main.Data)
 		//addTodoList(args)
 
 	},
 }
 
-var Data []byte
-
-var Fer []string
-
-//type Items struct {
-//	List DataStructure
-//}
-//
-//type DataStructure struct {
-//	item   []string
-//	status bool
-//}
+var Data1 []byte
+var Data = make(map[string]bool)
 
 //func GetData(s string) {
-//	//r.item = s
-//	//r.status = true
+//
 //	json_data, err := json.Marshal(s)
 //	if err != nil {
-//		fmt.Println(err)
+//		//fmt.Println(err)
 //	}
 //	fmt.Println(json_data)
 //
@@ -51,23 +40,20 @@ var Fer []string
 //	if err != nil {
 //		fmt.Println(err)
 //	}
-//	fmt.Println(content)
-//
+//	//fmt.Println(content)
 //	content = append(content, json_data...)
+//	Data[string(content)] = false
 //
 //	er := ioutil.WriteFile("task.csv", content, 0666)
 //	if er != nil {
 //		fmt.Println(er)
 //	}
-//	fmt.Println(content)
+//	//fmt.Println(content)
 //
 //}
 
-func GetData(s []string) {
-	//file := DataStructure{
-	//	item:   s,
-	//	status: false,
-	//}
+func GetData(s string) {
+
 	content, err := ioutil.ReadFile("task.csv")
 	if err != nil {
 		fmt.Println(err)
@@ -75,28 +61,17 @@ func GetData(s []string) {
 	//fmt.Printf("File contents: %s\n", content)
 
 	for i := 0; i < len(s); i++ {
-		t := s[i] + "\n"
-		Data = []byte(t)
+		t := s + "\n"
+		Data1 = []byte(t)
 	}
 
-	content = append(content, Data...)
+	content = append(content, Data1...)
 
 	er := ioutil.WriteFile("task.csv", content, 0666)
 	if er != nil {
 		fmt.Println(er)
 	}
-	//fmt.Println(Data)
-
-	for _, v := range content {
-		Fer = append(Fer, string(v))
-	}
-	b := strings.Join(Fer, "")
-	fmt.Println(b)
-
-	for _, v := range b {
-		fmt.Println(v)
-
-	}
+	//fmt.Println(Data1)
 
 }
 

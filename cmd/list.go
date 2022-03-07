@@ -7,6 +7,7 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -23,11 +24,22 @@ var listCmd = &cobra.Command{
 }
 
 func read() {
+	var s []string
 	content, err := ioutil.ReadFile("task.csv")
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println(string(content))
+
+	for _, record := range content {
+		s = append(s, string(record))
+	}
+	h := strings.Join(s, "")
+	j := strings.Split(h, "\n")
+
+	for i := 0; i < len(j)-1; i++ {
+		fmt.Println(i+1, j[i])
+	}
 
 }
 func init() {
