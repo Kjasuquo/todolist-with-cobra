@@ -18,12 +18,15 @@ var doneCmd = &cobra.Command{
 	Short: "Mark a task as done",
 	Long:  `After a task, use this to mark a task as done`,
 	Run: func(cmd *cobra.Command, args []string) {
-		Done(args[0])
+		fmt.Println(Done(args[0]))
 	},
 }
 
-func Done(text string) {
-	var Dbyte []byte
+var Notdone []string
+
+var Workdone []byte
+
+func Done(text string) string {
 	ind, _ := strconv.Atoi(text)
 	var s []string
 	content, err := ioutil.ReadFile("task.csv")
@@ -38,23 +41,34 @@ func Done(text string) {
 	h := strings.Join(s, "")
 	j := strings.Split(h, "\n")
 
-	for i := 0; i < len(j)-1; i++ {
-		if ind != i+1 {
-			fmt.Println(i+1, j[i])
-			t := j[i] + "\n"
-			Dbyte = []byte(t)
+	donwork, err := ioutil.ReadFile("done.csv")
+	if err != nil {
+		fmt.Println(err)
+	}
 
+	for i := 0; i < len(j)-1; i++ {
+		if ind == i+1 {
+			workdone := j[i] + "\n"
+			Workdone = []byte(workdone)
+			donwork = append(donwork, Workdone...)
+			er := ioutil.WriteFile("done.csv", donwork, 0666)
+			if er != nil {
+				fmt.Println(er)
+			}
+		}
+
+		if ind != i+1 {
+			Notdone = append(Notdone, j[i])
 		}
 	}
-	//fmt.Println(j)
 
-	content = append(content, Dbyte...)
-
-	er := ioutil.WriteFile("db.csv", content, 0666)
-	if er != nil {
-		fmt.Println(er)
+	nd, err := ioutil.ReadFile("done.csv")
+	if err != nil {
+		fmt.Println(err)
 	}
+	fmt.Println(string(nd))
 
+	return "Successfully done tasks"
 }
 
 func init() {

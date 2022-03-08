@@ -18,15 +18,13 @@ var addCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		//GetData(args)
 		//ab := DataStructure{}
-		GetData(args[0])
-		//fmt.Println(main.Data)
+		fmt.Println(GetData(args[0]))
 		//addTodoList(args)
 
 	},
 }
 
 var Data1 []byte
-var Data = make(map[string]bool)
 
 //func GetData(s string) {
 //
@@ -52,8 +50,7 @@ var Data = make(map[string]bool)
 //
 //}
 
-func GetData(s string) {
-
+func GetData(s string) string {
 	content, err := ioutil.ReadFile("task.csv")
 	if err != nil {
 		fmt.Println(err)
@@ -73,6 +70,7 @@ func GetData(s string) {
 	}
 	//fmt.Println(Data1)
 
+	return s + " successfully added"
 }
 
 func init() {

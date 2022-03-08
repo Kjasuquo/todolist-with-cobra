@@ -18,18 +18,17 @@ var listCmd = &cobra.Command{
 	Short: "List all tasks still to do",
 	Long:  `This command gives you the list of all your tasks that has not been done`,
 	Run: func(cmd *cobra.Command, args []string) {
-		read()
-		//fmt.Println("list ")
+		fmt.Println(Read())
 	},
 }
 
-func read() {
+func Read() string {
 	var s []string
 	content, err := ioutil.ReadFile("task.csv")
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println(string(content))
+	//fmt.Println(string(content))
 
 	for _, record := range content {
 		s = append(s, string(record))
@@ -40,7 +39,7 @@ func read() {
 	for i := 0; i < len(j)-1; i++ {
 		fmt.Println(i+1, j[i])
 	}
-
+	return "list successfully printed"
 }
 func init() {
 	rootCmd.AddCommand(listCmd)
