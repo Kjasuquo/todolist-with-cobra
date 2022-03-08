@@ -6,20 +6,41 @@ package cmd
 
 import (
 	"fmt"
-
 	"github.com/spf13/cobra"
+	"io/ioutil"
+	"strings"
 )
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List all tasks still to do",
+	Short: "List all tasks you haven't completed",
 	Long:  `This command gives you the list of all your tasks that has not been done`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list ")
+		fmt.Println(Read())
 	},
 }
 
+func Read() string {
+	var s []string
+	content, err := ioutil.ReadFile("task.csv")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	//fmt.Println(string(content))
+
+	for _, record := range content {
+		s = append(s, string(record))
+	}
+	h := strings.Join(s, "")
+	j := strings.Split(h, "\n")
+
+	for i := 0; i < len(j)-1; i++ {
+		fmt.Println(i+1, j[i])
+	}
+	return "\n list successfully printed"
+}
 func init() {
 	rootCmd.AddCommand(listCmd)
 

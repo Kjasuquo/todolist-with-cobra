@@ -5,10 +5,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"encoding/csv"
+	"encoding/json"
+	"fmt"
 	"github.com/spf13/cobra"
-	"log"
-	"os"
+	"io/ioutil"
+	"strings"
 )
 
 // addCmd represents the add command
@@ -17,25 +18,63 @@ var addCmd = &cobra.Command{
 	Short: "Add task to the list",
 	Long:  `Use this command to add task you want to carry out`,
 	Run: func(cmd *cobra.Command, args []string) {
+		//GetData(args)
+		//ab := DataStructure{}
+		fmt.Println(GetData(args[0]))
+		//addTodoList(args)
 
-		addToList([][]string{{"Task"}, {"Algo"}, {"Agile"}})
-		//fmt.Println("add called")
 	},
 }
 
-func addToList(s [][]string) {
-	task := s
+var Data1 []byte
 
-	csvfile, err := os.Create("task.csv")
+func GetData(s string) string {
+	content, err := ioutil.ReadFile("task.csv")
 	if err != nil {
-		log.Fatalln(err)
+		fmt.Println(err)
 	}
-	cswriter := csv.NewWriter(csvfile)
-	for _, t := range task {
-		_ = cswriter.Write(t)
+	//fmt.Printf("File contents: %s\n", content)
+
+	t := s + "\n"
+	Data1 = []byte(t)
+
+	content = append(content, Data1...)
+
+	er := ioutil.WriteFile("task.csv", content, 0666)
+	if er != nil {
+		fmt.Println(er)
 	}
-	cswriter.Flush()
-	csvfile.Close()
+	//fmt.Println(Data1)
+
+	//In order to help with my done and undone commands
+	newContent, err := ioutil.ReadFile("task.csv")
+	if err != nil {
+		fmt.Println(err)
+	}
+	//fmt.Println(string(content))
+
+	var container []string
+	for _, record := range newContent {
+		container = append(container, string(record))
+	}
+	h := strings.Join(container, "")
+	j := strings.Split(h, "\n")
+
+	for _, v := range j {
+		M[v] = false
+	}
+
+	json_data, erro := json.Marshal(M)
+	if erro != nil {
+		//fmt.Println(err)
+	}
+
+	e := ioutil.WriteFile("done.csv", json_data, 0666)
+	if e != nil {
+		fmt.Println(e)
+	}
+
+	return "\n" + s + " successfully added"
 }
 
 func init() {

@@ -5,7 +5,9 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/spf13/cobra"
 )
@@ -14,10 +16,42 @@ import (
 var cleanupCmd = &cobra.Command{
 	Use:   "cleanup",
 	Short: "Clean up done tasks",
-	Long:  `Clean up your task after it has been done`,
+	Long: `Clean up your task after it has been done.
+This hard deletes your done tasks and you cannot get it back `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("cleanup called")
+		fmt.Println(Cleanup())
 	},
+}
+
+func Cleanup() string {
+	var holdIt []string
+	con, er := ioutil.ReadFile("done.csv")
+	if er != nil {
+		fmt.Println(er)
+	}
+	json.Unmarshal(con, &M)
+	//fmt.Println(M)
+
+	for i, v := range M {
+		if v == false {
+			holdIt = append(holdIt, i)
+		}
+	}
+	//fmt.Println(holdIt)
+
+	for _, v := range holdIt {
+		t := v + "\n"
+		r := []byte(t)
+		Data1 = append(Data1, r...)
+	}
+
+	err := ioutil.WriteFile("task.csv", Data1, 0666)
+	if er != nil {
+		fmt.Println(err)
+	}
+	//fmt.Println(Data1)
+
+	return "All done tasks have been deleted"
 }
 
 func init() {

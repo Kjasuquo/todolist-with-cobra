@@ -5,7 +5,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"strconv"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -14,12 +18,67 @@ import (
 var undoneCmd = &cobra.Command{
 	Use:   "undone",
 	Short: "Mark a task as undone",
-	Long:  `A task that was not done but mistakenly marked as done can be marked undone back with this command`,
+	Long: `A task that was not done but mistakenly marked as done can be marked undone back with this command
+It is used to retrieve a task`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("undone called")
+		fmt.Println(Undone(args[0]))
 	},
 }
 
+func Undone(text string) string {
+	//var test string
+	ind, _ := strconv.Atoi(text)
+	var s []string
+	content, err := ioutil.ReadFile("task.csv")
+	if err != nil {
+		fmt.Println(err)
+	}
+	//fmt.Println(string(content))
+
+	for _, record := range content {
+		s = append(s, string(record))
+	}
+	h := strings.Join(s, "")
+	j := strings.Split(h, "\n")
+
+	con, er := ioutil.ReadFile("done.csv")
+	if er != nil {
+		fmt.Println(er)
+	}
+	json.Unmarshal(con, &M)
+	//fmt.Println(M)
+
+	for index, value := range j {
+		for item, _ := range M {
+			if ind == index+1 && value == item {
+				M[value] = false
+			}
+			if item == "" {
+				M[item] = true
+			}
+		}
+	}
+
+	//fmt.Println(M)
+
+	json_data, err := json.Marshal(M)
+	if err != nil {
+		//fmt.Println(err)
+	}
+
+	e := ioutil.WriteFile("done.csv", json_data, 0666)
+	if er != nil {
+		fmt.Println(e)
+	}
+
+	for item, status := range M {
+		if status == false {
+			fmt.Println(item)
+		}
+	}
+
+	return "\n" + text + " has been undeleted"
+}
 func init() {
 	rootCmd.AddCommand(undoneCmd)
 
