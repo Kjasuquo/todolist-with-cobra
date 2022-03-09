@@ -8,7 +8,9 @@ func TestDone(t *testing.T) {
 
 		want string
 	}{
-		{"washing car", "Successfully done tasks"},
+		{"washing car", "\n" + "task has been successfully done"},
+		{"Cooking", "\n" + "task has been successfully done"},
+		{"Ironing my clothes", "\n" + "task has been successfully done"},
 	}
 	for _, test := range tests {
 		got := Done(test.input)

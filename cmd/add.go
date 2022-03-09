@@ -5,9 +5,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
 	"io/ioutil"
+	"strings"
 )
 
 // addCmd represents the add command
@@ -26,30 +28,6 @@ var addCmd = &cobra.Command{
 
 var Data1 []byte
 
-//func GetData(s string) {
-//
-//	json_data, err := json.Marshal(s)
-//	if err != nil {
-//		//fmt.Println(err)
-//	}
-//	fmt.Println(json_data)
-//
-//	content, err := ioutil.ReadFile("task.csv")
-//	if err != nil {
-//		fmt.Println(err)
-//	}
-//	//fmt.Println(content)
-//	content = append(content, json_data...)
-//	Data[string(content)] = false
-//
-//	er := ioutil.WriteFile("task.csv", content, 0666)
-//	if er != nil {
-//		fmt.Println(er)
-//	}
-//	//fmt.Println(content)
-//
-//}
-
 func GetData(s string) string {
 	content, err := ioutil.ReadFile("task.csv")
 	if err != nil {
@@ -57,10 +35,8 @@ func GetData(s string) string {
 	}
 	//fmt.Printf("File contents: %s\n", content)
 
-	for i := 0; i < len(s); i++ {
-		t := s + "\n"
-		Data1 = []byte(t)
-	}
+	t := s + "\n"
+	Data1 = []byte(t)
 
 	content = append(content, Data1...)
 
@@ -70,7 +46,35 @@ func GetData(s string) string {
 	}
 	//fmt.Println(Data1)
 
-	return s + " successfully added"
+	//In order to help with my done and undone commands
+	newContent, err := ioutil.ReadFile("task.csv")
+	if err != nil {
+		fmt.Println(err)
+	}
+	//fmt.Println(string(content))
+
+	var container []string
+	for _, record := range newContent {
+		container = append(container, string(record))
+	}
+	h := strings.Join(container, "")
+	j := strings.Split(h, "\n")
+
+	for _, v := range j {
+		M[v] = false
+	}
+
+	json_data, erro := json.Marshal(M)
+	if erro != nil {
+		//fmt.Println(err)
+	}
+
+	e := ioutil.WriteFile("done.csv", json_data, 0666)
+	if e != nil {
+		fmt.Println(e)
+	}
+
+	return "\n" + s + " successfully added"
 }
 
 func init() {

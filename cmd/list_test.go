@@ -6,7 +6,7 @@ func TestRead(t *testing.T) {
 	var tests = []struct {
 		want string
 	}{
-		{"list successfully printed"},
+		{"\n" + "list successfully printed"},
 	}
 
 	for _, test := range tests {

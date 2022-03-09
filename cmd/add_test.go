@@ -8,7 +8,9 @@ func TestGetData(t *testing.T) {
 
 		want string
 	}{
-		{"add", "add successfully added"},
+		{"add", "\n" + "add successfully added"},
+		{"Pray today", "\n" + "Pray today successfully added"},
+		{"Push task", "\n" + "Push task successfully added"},
 	}
 
 	for _, test := range tests {
